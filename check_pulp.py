@@ -101,8 +101,11 @@ class check_pulp:
     self.set_exitcode(exitcode)
     if exitcode != 'OK':
       self.messages.append('[' + exitcode + '] ' + message)
+      return
     if exitcode == 'OK' and self.debug:
       self.messages.append('[' + exitcode + '] ' + message)
+      return
+    return
 
   def set_exitcode(self, exitcode):
     if not exitcode in self.exitcodes:
@@ -111,8 +114,16 @@ class check_pulp:
       self.exitcode = self.exitcodes[exitcode]
 
   def exit(self):
-    if not self.messages:
-      self.add_message('UNKOWN', 'no repositories found')
+    # handle empty messages list
+    if not len(self.messages):
+      if self.exitcodes['OK'] == self.exitcode:
+        print('[OK] all repos are shiny and in sync')
+        sys.exit(self.exitcodes['OK'])
+      else:
+        print('[UNKOWN] no repositories found')
+        sys.exit(self.exitcodes['UNKOWN'])
+
+    # print out messages
     for item in self.messages:
       print(item)
     sys.exit(self.exitcode)
