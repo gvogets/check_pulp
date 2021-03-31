@@ -6,11 +6,11 @@ Nagios Monitoring Plugin for testing the repository synchronisation status on a 
 
 ```
 -bash$ ./check_pulp.py -h
-usage: check_pulp.py [-h] [-H HOSTNAME] [-u USERNAME] [-p PASSWORD]
-                     [-c CONFIG] [-s SECTION] [--verbose]
+usage: check_pulp [-h] -H HOSTNAME [-u USERNAME] [-p PASSWORD] [-c CONFIG]
+                  [-s SECTION] [-i IGNORE] [--verbose]
 
 Nagios Monitoring Plugin for testing the repository synchronisation status on
-a Pulp Repository (see pulpproject.org for more information about Pulp)
+a Pulp Repository. For more information about pulp visit pulpproject.org.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -24,6 +24,8 @@ optional arguments:
                         Path to the optional configuration file
   -s SECTION, --section SECTION
                         Section in the config file
+  -i IGNORE, --ignore IGNORE
+                        Ignore these repos - comma separated
   --verbose, -v         Display repos in shiny state too
 ```
 

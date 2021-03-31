@@ -31,6 +31,7 @@ class check_pulp:
     self.hostname = hostname
     self.username = username
     self.password = password
+    self.ignore = ignore
 
     # set default values for this class
     self.exitcode = self.exitcodes['OK']
@@ -46,6 +47,9 @@ class check_pulp:
   def set_password(self, password):
     self.password = password
 
+  def set_ignore(self, ignore):
+    self.ignore = ignore.split(',')
+
   def get_repos(self):
     result = requests.get('https://' + self.hostname + '/pulp/api/v2/repositories/',
       headers={'Accept': 'application/json'},
@@ -59,8 +63,9 @@ class check_pulp:
     self.repolist = []
 
     for item in repos:
-      self.repolist.append(item['id'])
-      self.repos[item['id']] = item 
+      if item['id'] not in self.ignore:
+        self.repolist.append(item['id'])
+        self.repos[item['id']] = item
     return self.repolist
   
   def check_repo(self, repository):
@@ -174,6 +179,15 @@ add_args = (
       'required': False,
     }
   },
+  {
+    '--ignore': {
+      'alias': '-i',
+      'help': 'Ignore these repos - comma separated',
+      'type': str,
+      'default': None,
+      'required': False,
+    }
+  },
 )
 
 if __name__ == '__main__':
@@ -203,6 +217,7 @@ if __name__ == '__main__':
   nagios_plugin.set_hostname(args.hostname)
   nagios_plugin.set_username(args.username)
   nagios_plugin.set_password(args.password)
+  nagios_plugin.set_ignore(args.ignore)
 
   nagios_plugin.debugmode(args.verbose)
 
